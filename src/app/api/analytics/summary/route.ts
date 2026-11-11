@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchSummary } from "@/lib/api";
+import { requireAdminAuth } from "@/lib/admin-auth";
 
 export async function GET(request: NextRequest) {
+  const authResponse = requireAdminAuth(request);
+  if (authResponse) return authResponse;
+
   const { searchParams } = request.nextUrl;
   const from = searchParams.get("from") ?? "";
   const to = searchParams.get("to") ?? "";

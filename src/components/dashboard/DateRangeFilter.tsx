@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { DayPicker } from "react-day-picker";
-import { format, subDays } from "date-fns";
+import { format, parseISO, subDays } from "date-fns";
 import type { DateRange as DRType } from "react-day-picker";
 import "react-day-picker/style.css";
 
@@ -18,8 +18,8 @@ export function DateRangeFilter({ from, to }: DateRangeFilterProps) {
   const [open, setOpen] = useState(false);
 
   const [range, setRange] = useState<DRType>({
-    from: new Date(from),
-    to: new Date(to),
+    from: parseISO(from),
+    to: parseISO(to),
   });
 
   const applyRange = useCallback(
@@ -59,8 +59,8 @@ export function DateRangeFilter({ from, to }: DateRangeFilterProps) {
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           />
         </svg>
-        {format(new Date(from), "MMM d, yyyy")} —{" "}
-        {format(new Date(to), "MMM d, yyyy")}
+        {format(parseISO(from), "MMM d, yyyy")} —{" "}
+        {format(parseISO(to), "MMM d, yyyy")}
       </button>
 
       {open && (

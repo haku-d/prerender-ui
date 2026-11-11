@@ -13,11 +13,17 @@ export interface CacheStatusCount {
   count: number;
 }
 
+export interface ResponseStatusCount {
+  responseStatus: number;
+  count: number;
+}
+
 export interface AnalyticsSummary {
   total: number;
   uniquePages: number;
   byBot: BotCount[];
   byCacheStatus: CacheStatusCount[];
+  byResponseStatus: ResponseStatusCount[];
 }
 
 export interface PageEntry {

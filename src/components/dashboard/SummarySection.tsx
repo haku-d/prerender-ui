@@ -7,6 +7,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { BotBreakdownChart } from "@/components/charts/BotBreakdownChart";
 import { CacheStatusChart } from "@/components/charts/CacheStatusChart";
+import { ResponseStatusChart } from "@/components/charts/ResponseStatusChart";
 
 interface SummarySectionProps {
   from: string;
@@ -33,16 +34,16 @@ export function SummarySection({ from, to }: SummarySectionProps) {
         <Card>
           <StatBadge label="Unique Pages" value={data.uniquePages} />
         </Card>
-        <Card title="Requests by Bot" className="sm:col-span-2 xl:col-span-1">
-          {data.byBot.length > 0 ? (
-            <BotBreakdownChart data={data.byBot} />
+        <Card title="Cache Status" className="sm:col-span-2 xl:col-span-1">
+          {data.byCacheStatus.length > 0 ? (
+            <CacheStatusChart data={data.byCacheStatus} />
           ) : (
             <p className="text-sm text-gray-400">No data</p>
           )}
         </Card>
-        <Card title="Cache Status" className="sm:col-span-2 xl:col-span-1">
-          {data.byCacheStatus.length > 0 ? (
-            <CacheStatusChart data={data.byCacheStatus} />
+        <Card title="Requests by Response Status" className="sm:col-span-2 xl:col-span-1">
+          {data.byResponseStatus.length > 0 ? (
+            <ResponseStatusChart data={data.byResponseStatus} />
           ) : (
             <p className="text-sm text-gray-400">No data</p>
           )}

@@ -34,3 +34,38 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Admin Authentication
+
+The dashboard and analytics API routes use HTTP Basic Authentication. The
+username is `anvy`; set the password in the ignored `.env.local` file for local
+development:
+
+```env
+ADMIN_PASSWORD=replace-with-a-strong-unique-password
+```
+
+Set `ADMIN_PASSWORD` as a runtime environment variable in production. Requests
+are denied with `503` when it is missing. Serve the dashboard over HTTPS in
+production because Basic Authentication sends the credentials with each
+request.
+
+## Docker Compose
+
+Create an ignored `.env` file in this directory with the admin password and
+optional settings:
+
+```env
+ADMIN_PASSWORD=replace-with-a-strong-unique-password
+API_BASE_URL=http://seo-bot:8830
+PRERENDER_UI_PORT=5000
+```
+
+Start the existing backend stack first so the external
+`worktraqserver_worktraq` network and `seo-bot` service are available, then run:
+
+```bash
+docker compose up --build -d
+```
+
+The dashboard is available on the configured host port (default `5000`).

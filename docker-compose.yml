@@ -1,0 +1,21 @@
+services:
+  prerender-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PRERENDER_UI_PORT:-5000}:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      HOSTNAME: 0.0.0.0
+      API_BASE_URL: ${API_BASE_URL:-http://seo-bot:8830}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env}
+    networks:
+      - worktraq
+    restart: unless-stopped
+
+networks:
+  worktraq:
+    external: true
+    name: worktraqserver_worktraq
