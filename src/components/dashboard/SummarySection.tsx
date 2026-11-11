@@ -24,6 +24,8 @@ export function SummarySection({ from, to }: SummarySectionProps) {
     );
   if (!data) return null;
 
+  const responseStatuses = data.byResponseStatus ?? [];
+
   return (
     <section>
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Summary</h2>
@@ -42,8 +44,8 @@ export function SummarySection({ from, to }: SummarySectionProps) {
           )}
         </Card>
         <Card title="Requests by Response Status" className="sm:col-span-2 xl:col-span-1">
-          {data.byResponseStatus.length > 0 ? (
-            <ResponseStatusChart data={data.byResponseStatus} />
+          {responseStatuses.length > 0 ? (
+            <ResponseStatusChart data={responseStatuses} />
           ) : (
             <p className="text-sm text-gray-400">No data</p>
           )}

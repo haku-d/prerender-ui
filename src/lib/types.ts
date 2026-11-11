@@ -23,7 +23,7 @@ export interface AnalyticsSummary {
   uniquePages: number;
   byBot: BotCount[];
   byCacheStatus: CacheStatusCount[];
-  byResponseStatus: ResponseStatusCount[];
+  byResponseStatus?: ResponseStatusCount[];
 }
 
 export interface PageEntry {
