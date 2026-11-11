@@ -61,22 +61,41 @@ function cacheStatusTone(status: string) {
 }
 
 const COLUMNS: ColumnDef<BotRequestEntry>[] = [
-  { key: "requestedAt", header: "Requested At", type: "date" },
-  { key: "path", header: "Path", type: "text" },
+  {
+    key: "requestedAt",
+    header: "Requested At",
+    type: "date",
+    width: "16%",
+    render: (request) => format(parseISO(request.requestedAt), "yyyy-MM-dd HH:mm"),
+  },
+  {
+    key: "path",
+    header: "Path",
+    width: "24%",
+    render: (request) => (
+      <span className="block truncate" title={request.path}>
+        {request.path}
+      </span>
+    ),
+  },
   {
     key: "responseStatus",
     header: "HTTP Status",
     type: "number",
     align: "center",
+    width: "18%",
     render: (request) => (
-      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusTone(request.responseStatus)}`}>
-        {HTTP_STATUS_LABELS[request.responseStatus] ?? `${request.responseStatus} Status`}
-      </span>
+      <div className="flex w-full justify-center">
+        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusTone(request.responseStatus)}`}>
+          {request.responseStatus}
+        </span>
+      </div>
     ),
   },
   {
     key: "cacheStatus",
     header: "Cache Status",
+    width: "17%",
     render: (request) => (
       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${cacheStatusTone(request.cacheStatus)}`}>
         {CACHE_STATUS_LABELS[request.cacheStatus] ?? request.cacheStatus}
@@ -86,6 +105,7 @@ const COLUMNS: ColumnDef<BotRequestEntry>[] = [
   {
     key: "userAgent",
     header: "User Agent",
+    width: "25%",
     render: (request) => (
       <span
         className="block max-w-xs truncate font-mono text-xs text-gray-600"
@@ -228,7 +248,12 @@ export default async function BotDetailsPage({
                 </div>
               </fieldset>
             </form>
-            <DataTable columns={COLUMNS} data={result.data} />
+            <DataTable
+              columns={COLUMNS}
+              data={result.data}
+              tableClassName="w-full table-fixed"
+              containerClassName="overflow-hidden"
+            />
             {result.pagination.totalPages > 1 && (
               <nav
                 aria-label="Request pagination"

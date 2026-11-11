@@ -9,16 +9,21 @@ export interface ColumnDef<T> {
   href?: (item: T) => string;
   render?: (item: T) => ReactNode;
   align?: "left" | "center" | "right";
+  width?: string;
 }
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
+  tableClassName?: string;
+  containerClassName?: string;
 }
 
 export function DataTable<T extends object>({
   columns,
   data,
+  tableClassName = "",
+  containerClassName = "overflow-x-auto",
 }: DataTableProps<T>) {
   function renderCell(item: T, col: ColumnDef<T>) {
     const value = (item as Record<string | symbol, unknown>)[
@@ -50,13 +55,14 @@ export function DataTable<T extends object>({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-sm">
+    <div className={containerClassName}>
+      <table className={`min-w-full text-sm ${tableClassName}`}>
         <thead>
           <tr className="border-b border-gray-200">
             {columns.map((col) => (
               <th
                 key={String(col.key)}
+                style={col.width ? { width: col.width } : undefined}
                 className={`px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide ${alignmentClass(col)}`}
               >
                 {col.header}
@@ -70,6 +76,7 @@ export function DataTable<T extends object>({
               {columns.map((col) => (
                 <td
                   key={String(col.key)}
+                  style={col.width ? { width: col.width } : undefined}
                   className={`px-3 py-2 text-gray-700 ${alignmentClass(col)}`}
                 >
                   {col.href ? (

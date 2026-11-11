@@ -62,26 +62,46 @@ function requestStatusTone(status: number) {
 }
 
 const COLUMNS: ColumnDef<AnalyticsRequestEntry>[] = [
-  { key: "requestedAt", header: "Requested At", type: "date" },
-  { key: "botName", header: "Bot", type: "text" },
-  { key: "path", header: "Path", type: "text" },
+  {
+    key: "requestedAt",
+    header: "Requested At",
+    type: "date",
+    width: "16%",
+    render: (request) => format(parseISO(request.requestedAt), "yyyy-MM-dd HH:mm"),
+  },
+  { key: "botName", header: "Bot", type: "text", width: "11%" },
+  {
+    key: "path",
+    header: "Path",
+    width: "20%",
+    render: (request) => (
+      <span className="block truncate" title={request.path}>
+        {request.path}
+      </span>
+    ),
+  },
   {
     key: "responseStatus",
     header: "HTTP Status",
     type: "number",
+    align: "center",
+    width: "15%",
     render: (request) => (
-      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${requestStatusTone(request.responseStatus)}`}>
-        {HTTP_STATUS_LABELS[request.responseStatus] ?? `${request.responseStatus} Status`}
-      </span>
+      <div className="flex w-full justify-center">
+        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${requestStatusTone(request.responseStatus)}`}>
+          {request.responseStatus}
+        </span>
+      </div>
     ),
   },
-  { key: "cacheStatus", header: "Cache Status", type: "text" },
+  { key: "cacheStatus", header: "Cache Status", type: "text", width: "14%" },
   {
     key: "userAgent",
     header: "User Agent",
+    width: "24%",
     render: (request) => (
       <span
-        className="block max-w-xs truncate font-mono text-xs text-gray-600"
+        className="block max-w-full truncate font-mono text-xs text-gray-600"
         title={request.userAgent}
       >
         {request.userAgent}
@@ -145,7 +165,12 @@ export default async function RequestsPage({
             <h2 className="mb-4 text-base font-semibold text-gray-700">
               Recent Requests ({result.pagination.total.toLocaleString()})
             </h2>
-            <DataTable columns={COLUMNS} data={result.data} />
+            <DataTable
+              columns={COLUMNS}
+              data={result.data}
+              tableClassName="w-full table-fixed"
+              containerClassName="overflow-hidden"
+            />
             {result.pagination.totalPages > 1 && status !== undefined && (
               <nav
                 aria-label="Request pagination"
