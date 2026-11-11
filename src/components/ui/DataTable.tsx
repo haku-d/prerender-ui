@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { format } from "date-fns";
 
 export interface ColumnDef<T> {
   key: keyof T;
   header: string;
   type?: "text" | "number" | "date";
+  href?: (item: T) => string;
 }
 
 interface DataTableProps<T> {
@@ -52,7 +54,16 @@ export function DataTable<T extends object>({
                   key={String(col.key)}
                   className={`px-3 py-2 text-gray-700 ${col.type === "number" ? "text-right tabular-nums" : ""}`}
                 >
-                  {renderCell(item, col)}
+                  {col.href ? (
+                    <Link
+                      href={col.href(item)}
+                      className="text-blue-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                    >
+                      {renderCell(item, col)}
+                    </Link>
+                  ) : (
+                    renderCell(item, col)
+                  )}
                 </td>
               ))}
             </tr>

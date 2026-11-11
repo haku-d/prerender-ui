@@ -37,3 +37,10 @@ export interface BotEntry {
   count: number;
   lastRequestedAt: string;
 }
+
+export interface BotRequestEntry {
+  requestedAt: string;
+  path: string;
+  cacheStatus: string;
+  responseStatus: number;
+}

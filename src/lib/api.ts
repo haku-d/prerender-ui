@@ -1,5 +1,10 @@
 import "server-only";
-import type { AnalyticsSummary, PageEntry, BotEntry } from "./types";
+import type {
+  AnalyticsSummary,
+  BotEntry,
+  BotRequestEntry,
+  PageEntry,
+} from "./types";
 
 const baseUrl = process.env.API_BASE_URL ?? "";
 
@@ -36,4 +41,16 @@ export function fetchPages(
 
 export function fetchBots(from: string, to: string): Promise<BotEntry[]> {
   return apiFetch<BotEntry[]>("/analytics/bots", { from, to });
+}
+
+export function fetchRecentBotRequests(
+  botName: string,
+  from: string,
+  to: string,
+  limit: string = "50",
+): Promise<BotRequestEntry[]> {
+  return apiFetch<BotRequestEntry[]>(
+    `/analytics/bots/${encodeURIComponent(botName)}/requests`,
+    { from, to, limit },
+  );
 }

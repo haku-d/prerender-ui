@@ -8,11 +8,6 @@ import { BotsChart } from "@/components/charts/BotsChart";
 import { DataTable, ColumnDef } from "@/components/ui/DataTable";
 import type { BotEntry } from "@/lib/types";
 
-const COLUMNS: ColumnDef<BotEntry>[] = [
-  { key: "botName", header: "Bot", type: "text" },
-  { key: "count", header: "Requests", type: "number" },
-  { key: "lastRequestedAt", header: "Last Seen", type: "date" },
-];
 
 interface BotsSectionProps {
   from: string;
@@ -21,6 +16,19 @@ interface BotsSectionProps {
 
 export function BotsSection({ from, to }: BotsSectionProps) {
   const { data, isLoading, error } = useBots(from, to);
+  const columns: ColumnDef<BotEntry>[] = [
+    {
+      key: "botName",
+      header: "Bot",
+      type: "text",
+      href: (bot) => {
+        const params = new URLSearchParams({ from, to });
+        return `/bots/${encodeURIComponent(bot.botName)}?${params.toString()}`;
+      },
+    },
+    { key: "count", header: "Requests", type: "number" },
+    { key: "lastRequestedAt", header: "Last Seen", type: "date" },
+  ];
 
   if (isLoading) return <LoadingSpinner />;
   if (error)
@@ -38,7 +46,7 @@ export function BotsSection({ from, to }: BotsSectionProps) {
           )}
         </Card>
         <Card title="Bot Details">
-          <DataTable columns={COLUMNS} data={data ?? []} />
+          <DataTable columns={columns} data={data ?? []} />
         </Card>
       </div>
     </section>
