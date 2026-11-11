@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   Bar,
   BarChart,
@@ -34,6 +35,15 @@ const STATUS_LABELS: Record<number, string> = {
 
 interface ResponseStatusChartProps {
   data: ResponseStatusCount[];
+  from: string;
+  to: string;
+}
+
+interface StatusTickProps {
+  x?: number;
+  y?: number;
+  payload?: { value: number | string };
+  onSelect: (status: number) => void;
 }
 
 function formatStatusLabel(value: number | string) {
@@ -41,7 +51,44 @@ function formatStatusLabel(value: number | string) {
   return STATUS_LABELS[status] ?? String(value);
 }
 
-export function ResponseStatusChart({ data }: ResponseStatusChartProps) {
+function StatusTick({ x = 0, y = 0, payload, onSelect }: StatusTickProps) {
+  if (!payload) return null;
+
+  const status = Number(payload.value);
+  const label = formatStatusLabel(payload.value);
+  const navigate = () => onSelect(status);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={4}
+      textAnchor="end"
+      role="link"
+      tabIndex={0}
+      aria-label={`View requests with ${label}`}
+      className="cursor-pointer fill-teal-800 underline outline-none focus-visible:fill-teal-950"
+      onClick={navigate}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          navigate();
+        }
+      }}
+    >
+      {label}
+    </text>
+  );
+}
+
+export function ResponseStatusChart({ data, from, to }: ResponseStatusChartProps) {
+  const router = useRouter();
+
+  function showRequests(status: number) {
+    const params = new URLSearchParams({ from, to, status: String(status) });
+    router.push(`/requests?${params.toString()}`);
+  }
+
   return (
     <ResponsiveContainer width="100%" height={Math.max(220, data.length * 42)}>
       <BarChart
@@ -61,8 +108,7 @@ export function ResponseStatusChart({ data }: ResponseStatusChartProps) {
           type="category"
           dataKey="responseStatus"
           width={150}
-          tickFormatter={formatStatusLabel}
-          tick={{ fontSize: 11 }}
+          tick={<StatusTick onSelect={showRequests} />}
           tickLine={false}
           axisLine={false}
         />

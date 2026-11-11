@@ -57,7 +57,7 @@ export function CacheStatusChart({ data }: CacheStatusChartProps) {
               entry && total > 0
                 ? Math.round((entry.count / total) * 100)
                 : 0;
-            return `${value} ${percentage}% · ${entry?.count.toLocaleString() ?? 0} requests`;
+            return `${value} ${percentage}%`;
           }}
         />
       </PieChart>

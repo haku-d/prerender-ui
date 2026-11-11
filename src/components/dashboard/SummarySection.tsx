@@ -53,7 +53,7 @@ export function SummarySection({ from, to }: SummarySectionProps) {
         </Card>
         <Card title="Requests by Response Status">
           {responseStatuses.length > 0 ? (
-            <ResponseStatusChart data={responseStatuses} />
+            <ResponseStatusChart data={responseStatuses} from={from} to={to} />
           ) : (
             <p className="text-sm text-gray-400">No data</p>
           )}

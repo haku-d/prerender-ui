@@ -43,14 +43,27 @@ export interface BotRequestEntry {
   path: string;
   cacheStatus: string;
   responseStatus: number;
+  userAgent: string;
+}
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface PaginatedBotRequests {
   data: BotRequestEntry[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  pagination: Pagination;
+  availableStatuses?: ResponseStatusCount[];
+}
+
+export interface AnalyticsRequestEntry extends BotRequestEntry {
+  botName: string;
+}
+
+export interface PaginatedRequests {
+  data: AnalyticsRequestEntry[];
+  pagination: Pagination;
 }
