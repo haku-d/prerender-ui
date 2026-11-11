@@ -23,6 +23,8 @@ interface CacheStatusChartProps {
 }
 
 export function CacheStatusChart({ data }: CacheStatusChartProps) {
+  const total = data.reduce((sum, entry) => sum + entry.count, 0);
+
   return (
     <ResponsiveContainer width="100%" height={220}>
       <PieChart>
@@ -33,10 +35,6 @@ export function CacheStatusChart({ data }: CacheStatusChartProps) {
           cx="50%"
           cy="50%"
           outerRadius={80}
-          label={({ name, percent }) =>
-            `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
-          }
-          labelLine={false}
         >
           {data.map((entry) => (
             <Cell
@@ -50,7 +48,18 @@ export function CacheStatusChart({ data }: CacheStatusChartProps) {
             typeof value === "number" ? value.toLocaleString() : String(value)
           }
         />
-        <Legend />
+        <Legend
+          formatter={(value) => {
+            const entry = data.find(
+              (item) => item.cacheStatus === String(value),
+            );
+            const percentage =
+              entry && total > 0
+                ? Math.round((entry.count / total) * 100)
+                : 0;
+            return `${value} ${percentage}% · ${entry?.count.toLocaleString() ?? 0} requests`;
+          }}
+        />
       </PieChart>
     </ResponsiveContainer>
   );

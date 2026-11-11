@@ -44,3 +44,13 @@ export interface BotRequestEntry {
   cacheStatus: string;
   responseStatus: number;
 }
+
+export interface PaginatedBotRequests {
+  data: BotRequestEntry[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}

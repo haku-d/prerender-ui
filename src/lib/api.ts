@@ -2,8 +2,8 @@ import "server-only";
 import type {
   AnalyticsSummary,
   BotEntry,
-  BotRequestEntry,
   PageEntry,
+  PaginatedBotRequests,
 } from "./types";
 
 const baseUrl = process.env.API_BASE_URL ?? "";
@@ -47,10 +47,11 @@ export function fetchRecentBotRequests(
   botName: string,
   from: string,
   to: string,
-  limit: string = "50",
-): Promise<BotRequestEntry[]> {
-  return apiFetch<BotRequestEntry[]>(
+  page: number = 1,
+  limit: number = 50,
+): Promise<PaginatedBotRequests> {
+  return apiFetch<PaginatedBotRequests>(
     `/analytics/bots/${encodeURIComponent(botName)}/requests`,
-    { from, to, limit },
+    { from, to, page: String(page), limit: String(limit) },
   );
 }

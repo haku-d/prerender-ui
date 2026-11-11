@@ -3,11 +3,11 @@ import { format, isValid, parseISO, subDays } from "date-fns";
 import { DataTable, type ColumnDef } from "@/components/ui/DataTable";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { fetchRecentBotRequests } from "@/lib/api";
-import type { BotRequestEntry } from "@/lib/types";
+import type { BotRequestEntry, PaginatedBotRequests } from "@/lib/types";
 
 interface BotDetailsPageProps {
   params: Promise<{ botName: string }>;
-  searchParams: Promise<{ from?: string; to?: string }>;
+  searchParams: Promise<{ from?: string; to?: string; page?: string }>;
 }
 
 const COLUMNS: ColumnDef<BotRequestEntry>[] = [
@@ -25,6 +25,11 @@ function dateOrFallback(value: string | undefined, fallback: string) {
     : fallback;
 }
 
+function pageHref(botName: string, from: string, to: string, page: number) {
+  const params = new URLSearchParams({ from, to, page: String(page) });
+  return `/bots/${encodeURIComponent(botName)}?${params.toString()}`;
+}
+
 export default async function BotDetailsPage({
   params,
   searchParams,
@@ -37,11 +42,15 @@ export default async function BotDetailsPage({
     format(subDays(today, 6), "yyyy-MM-dd"),
   );
   const backParams = new URLSearchParams({ from, to });
+  const requestedPage = Number(filters.page);
+  const page = Number.isSafeInteger(requestedPage) && requestedPage > 0
+    ? requestedPage
+    : 1;
 
-  let requests: BotRequestEntry[] = [];
+  let result: PaginatedBotRequests | null = null;
   let error: string | null = null;
   try {
-    requests = await fetchRecentBotRequests(botName, from, to);
+    result = await fetchRecentBotRequests(botName, from, to, page);
   } catch (err) {
     error = err instanceof Error ? err.message : "Unknown error";
   }
@@ -62,14 +71,50 @@ export default async function BotDetailsPage({
         </p>
         {error ? (
           <ErrorMessage message={`Failed to load bot requests: ${error}`} />
-        ) : (
+        ) : result ? (
           <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-base font-semibold text-gray-700">
-              Recent Requests
+              Recent Requests ({result.pagination.total.toLocaleString()})
             </h2>
-            <DataTable columns={COLUMNS} data={requests} />
+            <DataTable columns={COLUMNS} data={result.data} />
+            {result.pagination.totalPages > 1 && (
+              <nav
+                aria-label="Request pagination"
+                className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 text-sm"
+              >
+                <span className="text-gray-500">
+                  Page {result.pagination.page} of {result.pagination.totalPages}
+                </span>
+                <div className="flex gap-2">
+                  {result.pagination.page > 1 ? (
+                    <Link
+                      href={pageHref(botName, from, to, result.pagination.page - 1)}
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-gray-700 hover:bg-gray-50"
+                    >
+                      Previous
+                    </Link>
+                  ) : (
+                    <span className="rounded-md border border-gray-200 px-3 py-1.5 text-gray-400">
+                      Previous
+                    </span>
+                  )}
+                  {result.pagination.page < result.pagination.totalPages ? (
+                    <Link
+                      href={pageHref(botName, from, to, result.pagination.page + 1)}
+                      className="rounded-md border border-gray-300 px-3 py-1.5 text-gray-700 hover:bg-gray-50"
+                    >
+                      Next
+                    </Link>
+                  ) : (
+                    <span className="rounded-md border border-gray-200 px-3 py-1.5 text-gray-400">
+                      Next
+                    </span>
+                  )}
+                </div>
+              </nav>
+            )}
           </section>
-        )}
+        ) : null}
       </div>
     </main>
   );

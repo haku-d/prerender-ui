@@ -64,8 +64,8 @@ export function DateRangeFilter({ from, to }: DateRangeFilterProps) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-2 z-50 rounded-xl shadow-xl border border-gray-200 bg-white p-4 flex gap-4">
-          <div className="flex flex-col gap-1 border-r border-gray-100 pr-4">
+        <div className="absolute left-0 top-full z-50 mt-2 flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-xl sm:flex-row">
+          <div className="grid grid-cols-3 gap-1 border-b border-gray-100 pb-3 sm:flex sm:w-max sm:shrink-0 sm:flex-col sm:border-b-0 sm:border-r sm:pb-0 sm:pr-4">
             {presets.map((p) => (
               <button
                 key={p.days}
@@ -78,7 +78,7 @@ export function DateRangeFilter({ from, to }: DateRangeFilterProps) {
                   setRange(selected);
                   applyRange(selected);
                 }}
-                className="rounded-md px-3 py-1.5 text-sm text-left text-gray-600 hover:bg-gray-100 transition-colors"
+                className="whitespace-nowrap rounded-md px-2 py-1.5 text-left text-sm text-gray-600 transition-colors hover:bg-gray-100 sm:px-3"
               >
                 {p.label}
               </button>

@@ -1,11 +1,12 @@
 "use client";
 
+import { format, parseISO } from "date-fns";
 import { useSummary } from "@/hooks/useSummary";
 import { Card } from "@/components/ui/Card";
 import { StatBadge } from "@/components/ui/StatBadge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { BotBreakdownChart } from "@/components/charts/BotBreakdownChart";
+
 import { CacheStatusChart } from "@/components/charts/CacheStatusChart";
 import { ResponseStatusChart } from "@/components/charts/ResponseStatusChart";
 
@@ -28,22 +29,29 @@ export function SummarySection({ from, to }: SummarySectionProps) {
 
   return (
     <section>
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Summary</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+        <h2 className="text-xl font-semibold text-gray-800">Summary</h2>
+        <p className="text-sm text-gray-500">
+          {format(parseISO(from), "MMM d, yyyy")} – {format(parseISO(to), "MMM d, yyyy")}
+        </p>
+      </div>
+      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Card>
           <StatBadge label="Total Requests" value={data.total} />
         </Card>
         <Card>
           <StatBadge label="Unique Pages" value={data.uniquePages} />
         </Card>
-        <Card title="Cache Status" className="sm:col-span-2 xl:col-span-1">
+      </div>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <Card title="Cache Status">
           {data.byCacheStatus.length > 0 ? (
             <CacheStatusChart data={data.byCacheStatus} />
           ) : (
             <p className="text-sm text-gray-400">No data</p>
           )}
         </Card>
-        <Card title="Requests by Response Status" className="sm:col-span-2 xl:col-span-1">
+        <Card title="Requests by Response Status">
           {responseStatuses.length > 0 ? (
             <ResponseStatusChart data={responseStatuses} />
           ) : (
