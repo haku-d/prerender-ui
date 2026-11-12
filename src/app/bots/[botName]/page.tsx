@@ -4,6 +4,7 @@ import { DataTable, type ColumnDef } from "@/components/ui/DataTable";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { fetchRecentBotRequests } from "@/lib/api";
 import type { BotRequestEntry, PaginatedBotRequests } from "@/lib/types";
+import { ReclassifyUnknownBotsButton } from "./ReclassifyUnknownBotsButton";
 
 interface BotDetailsPageProps {
   params: Promise<{ botName: string }>;
@@ -191,6 +192,7 @@ export default async function BotDetailsPage({
           &larr; Back to dashboard
         </Link>
         <h1 className="mt-4 text-2xl font-bold text-gray-900">{botName}</h1>
+        {botName === "Unknown Bot" && <ReclassifyUnknownBotsButton />}
         <p className="mt-1 mb-6 text-sm text-gray-500">
           Recent requests from {format(parseISO(from), "MMM d, yyyy")} to{" "}
           {format(parseISO(to), "MMM d, yyyy")}

@@ -42,7 +42,18 @@ export function fetchPages(
 }
 
 export function fetchBots(from: string, to: string): Promise<BotEntry[]> {
-  return apiFetch<BotEntry[]>("/analytics/bots", { from, to });
+  return apiFetch<BotEntry[]>('/analytics/bots', { from, to });
+}
+
+export async function reclassifyUnknownBots(): Promise<{ updated: number }> {
+  const res = await fetch(`${baseUrl}/analytics/bots/reclassify-unknown`, {
+    method: "POST",
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`API error ${res.status}: ${res.statusText}`);
+  }
+  return res.json() as Promise<{ updated: number }>;
 }
 
 export function fetchRequests(
