@@ -66,14 +66,14 @@ const COLUMNS: ColumnDef<AnalyticsRequestEntry>[] = [
     key: "requestedAt",
     header: "Requested At",
     type: "date",
-    width: "16%",
+    width: "14%",
     render: (request) => format(parseISO(request.requestedAt), "yyyy-MM-dd HH:mm"),
   },
-  { key: "botName", header: "Bot", type: "text", width: "11%" },
+  { key: "botName", header: "Bot", type: "text", width: "10%" },
   {
     key: "path",
     header: "Path",
-    width: "20%",
+    width: "18%",
     render: (request) => (
       <span className="block truncate" title={request.path}>
         {request.path}
@@ -85,7 +85,7 @@ const COLUMNS: ColumnDef<AnalyticsRequestEntry>[] = [
     header: "HTTP Status",
     type: "number",
     align: "center",
-    width: "15%",
+    width: "12%",
     render: (request) => (
       <div className="flex w-full justify-center">
         <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${requestStatusTone(request.responseStatus)}`}>
@@ -94,11 +94,17 @@ const COLUMNS: ColumnDef<AnalyticsRequestEntry>[] = [
       </div>
     ),
   },
-  { key: "cacheStatus", header: "Cache Status", type: "text", width: "14%" },
+  { key: "cacheStatus", header: "Cache Status", type: "text", width: "12%" },
+  {
+    key: "clientIp",
+    header: "Client IP",
+    width: "12%",
+    render: (request) => request.clientIp ?? "—",
+  },
   {
     key: "userAgent",
     header: "User Agent",
-    width: "24%",
+    width: "22%",
     render: (request) => (
       <span
         className="block max-w-full truncate font-mono text-xs text-gray-600"

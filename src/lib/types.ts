@@ -44,6 +44,7 @@ export interface BotRequestEntry {
   cacheStatus: string;
   responseStatus: number;
   userAgent: string;
+  clientIp: string | null;
 }
 
 export interface Pagination {
